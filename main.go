@@ -14,7 +14,7 @@ func init() {
 
 	var u User
 	u.UserName = "Philipe"
-	u.Password = "boujour123"
+	u.Password = "hello123"
 
 	Users["aoidifhlkajdf"] = u
 }
