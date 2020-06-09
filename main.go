@@ -1,65 +1,21 @@
 package main
 
 import (
-	"encoding/json"
-	"time"
-
 	"github.com/gin-gonic/gin"
+
+	"github.com/dgkg/videogames/db/mock"
+	"github.com/dgkg/videogames/endpoints"
 )
 
-var Users map[string]User
+var dbMock = mock.New()
 
 func init() {
-	Users = make(map[string]User)
-
-	var u User
-	u.UserName = "Philipe"
-	u.Password = "hello123"
-
-	Users["aoidifhlkajdf"] = u
+	mock.MockUser(dbMock.(*mock.DB), "Denis", "Plagnol", "denis@yahoo.fr", "coucou123")
+	mock.MockVideoGame(dbMock.(*mock.DB), "Denis", "Plagnol", "denis@yahoo.fr", "coucou123")
 }
 
 func main() {
 	r := gin.Default()
-	r.GET("/users/:uuid", func(ctx *gin.Context) {
-		ctx.JSON(200, Users[ctx.Param("uuid")])
-	})
+	endpoints.New(dbMock, r)
 	r.Run(":8080")
-}
-
-// User defin a single User.
-type User struct {
-	ID          string    `json:"uuid"`
-	UserName    string    `json:"user_name"`
-	Email       string    `json:"email"`
-	Password    string    `json:"pass"`
-	FirstName   string    `json:"fn"`
-	LastName    string    `json:"ln"`
-	DateOfBirth time.Time `json:"date_of_birth"`
-	CreateDate  time.Time `json:"create_date"`
-	DeleteDate  time.Time `json:"delete_date"`
-}
-
-func (u User) MarshalJSON() ([]byte, error) {
-	type aux struct {
-		ID          string    `json:"uuid"`
-		UserName    string    `json:"user_name"`
-		Email       string    `json:"email"`
-		FirstName   string    `json:"fn"`
-		LastName    string    `json:"ln"`
-		DateOfBirth time.Time `json:"date_of_birth"`
-		CreateDate  time.Time `json:"create_date"`
-		DeleteDate  time.Time `json:"delete_date"`
-	}
-	var a aux
-	a.ID = u.ID
-	a.UserName = u.UserName
-	a.Email = u.Email
-	a.FirstName = u.FirstName
-	a.LastName = u.LastName
-	a.DateOfBirth = u.DateOfBirth
-	a.CreateDate = u.CreateDate
-	a.DeleteDate = u.DeleteDate
-
-	return json.Marshal(a)
 }
