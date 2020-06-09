@@ -20,7 +20,7 @@ func New(fileName string) db.Store {
 		panic("failed to connect database")
 	}
 	// Migrate the schema
-	db.AutoMigrate(&models.User{},&models.VideoGame{})
+	db.AutoMigrate(&models.User{}, &models.VideoGame{})
 
 	return &Service{
 		db: db,

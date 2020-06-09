@@ -11,7 +11,7 @@ var dbMock = mock.New()
 
 func init() {
 	mock.MockUser(dbMock.(*mock.DB), "Denis", "Plagnol", "denis@yahoo.fr", "coucou123")
-	mock.MockVideoGame(dbMock.(*mock.DB), "Denis", "Plagnol", "denis@yahoo.fr", "coucou123")
+	mock.MockVideoGame(dbMock.(*mock.DB), "Denis", "Plagnol", 1, 1, []string{"coucou123"})
 }
 
 func main() {

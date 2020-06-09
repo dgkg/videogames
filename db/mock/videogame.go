@@ -9,21 +9,20 @@ import (
 )
 
 // MockVideoGame defines a Mocked videogame.
-func MockVideoGame(db *db, v struct {
-	title, description string
-	status, category   int
-	images             []string
-}) {
+func MockVideoGame(db *DB, title,
+	description string,
+	status, category int,
+	images []string) {
 
 	id := uuid.New().String()
 
 	u := models.VideoGame{
 		ID:          id,
-		Title:       v.title,
-		Description: v.description,
-		Images:      v.images,
-		Status:      v.status,
-		Category:    v.category,
+		Title:       title,
+		Description: description,
+		Images:      images,
+		Status:      status,
+		Category:    category,
 	}
 
 	db.VideoGames[id] = &u
@@ -49,20 +48,21 @@ func (m DB) GetVideoGame(uuid string) (*models.VideoGame, error) {
 }
 
 func (m DB) UpdateVideoGame(uuid string, mapper map[string]interface{}) (*models.VideoGame, error) {
-	_, ok := m.Users[uuid]
+	u, ok := m.VideoGames[uuid]
 	if ok == false {
 		return nil, errors.New("db mock: user not found")
 	}
 
-	for key, value := range mapper {
-		if u2[key] != u[key] {
-			u2[key] = u[key]
-		}
-	}
+	u.IDUser = mapper["IDUser"].(string)
+	u.Title = mapper["Title"].(string)
+	u.Description = mapper["Description"].(string)
+	u.Images = mapper["Images"].([]string)
+	u.Status = mapper["Status"].(int)
+	u.Category = mapper["Category"].(int)
 
-	m.VideoGames[uuid] = &u2
+	m.VideoGames[uuid] = u
 
-	return m.VideoGames[uuid], nil
+	return u, nil
 }
 
 func (m DB) DeleteVideoGame(uuid string) error {

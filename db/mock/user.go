@@ -8,6 +8,17 @@ import (
 	"github.com/google/uuid"
 )
 
+func MockUser(db *DB, fn, ln, email, pass string) {
+	uuid := uuid.New().String()
+	db.Users[uuid] = &models.User{
+		ID:        uuid,
+		FirstName: fn,
+		LastName:  ln,
+		Email:     email,
+		Password:  pass,
+	}
+}
+
 func (m DB) AddUser(u *models.User) error {
 	u.ID = uuid.New().String()
 	m.Users[u.ID] = u
@@ -35,10 +46,10 @@ func (m DB) UpdateUser(uuid string, update map[string]interface{}) (*models.User
 	}
 
 	u2.FirstName = update["FirstName"].(string)
-	u2.LastName = update["LastName
-	u2.Email = u.Email
+	u2.LastName = update["LastName"].(string)
+	u2.Email = update["Email"].(string)
 	u2.UpdateDate = time.Now()
-	m.Users[uuid] = &u2
+	m.Users[uuid] = u2
 
 	return m.Users[uuid], nil
 }

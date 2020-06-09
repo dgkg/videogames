@@ -1,8 +1,15 @@
 package sqlite
 
+import (
+	"time"
+
+	"github.com/dgkg/videogames/models"
+	"github.com/google/uuid"
+)
+
 func (serivce *Service) AddVideoGame(v *models.VideoGame) error {
 	v.ID = uuid.New().String()
-	v.CreateDate=  time.Now()
+	v.CreateDate = time.Now()
 	return service.db.Create(&v).Error
 }
 
@@ -28,7 +35,7 @@ func (serivce *Service) UpdateVideoGame(uuid string, update *models.VideoGame) (
 
 func (serivce *Service) DeleteVideoGame(uuid string) error {
 	vg := models.VideoGame{
-		ID:uuid,
+		ID: uuid,
 	}
 	return service.db.Delete(&vg)
 }

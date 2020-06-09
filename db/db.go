@@ -9,7 +9,7 @@ type Store interface {
 	StoreVideoGames
 }
 
-type StoreUser interface{
+type StoreUser interface {
 	AddUser(u *models.User) error
 	GetUsers() (map[string]*models.User, error)
 	GetUser(uuid string) (*models.User, error)
@@ -17,7 +17,7 @@ type StoreUser interface{
 	DeleteUser(uuid string) error
 }
 
-type StoreVideoGames interface{
+type StoreVideoGames interface {
 	AddVideoGame(u *models.VideoGame) error
 	GetVideoGames() (map[string]*models.VideoGame, error)
 	GetVideoGame(uuid string) (*models.VideoGame, error)
