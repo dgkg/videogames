@@ -21,6 +21,7 @@ func initEndpointUser(db db.Store, r *gin.Engine) {
 	r.GET("/users", us.GetAll)
 	r.DELETE("/users/:uuid", us.Delete)
 	r.POST("/users", us.Create)
+	r.PATCH("/users/:uuid", us.UpdateUser)
 }
 
 func (su *serviceUser) Get(ctx *gin.Context) {
@@ -61,6 +62,30 @@ func (su *serviceUser) Create(ctx *gin.Context) {
 		return
 	}
 	if err := su.db.AddUser(&u); err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusInternalServerError, nil)
+		return
+	}
+	ctx.JSON(200, u)
+}
+
+func (su *serviceUser) UpdateUser(ctx *gin.Context) {
+	update := make(map[string]interface{})
+
+	if err := ctx.BindJSON(&update); err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if _, err := su.db.UpdateUser(ctx.Param("uuid"), update); err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusInternalServerError, nil)
+		return
+	}
+
+	u, err := su.db.GetUser(ctx.Param("uuid"))
+	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusInternalServerError, nil)
 		return
