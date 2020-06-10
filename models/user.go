@@ -14,20 +14,20 @@ type User struct {
 	FirstName   string    `json:"fn"`
 	LastName    string    `json:"ln"`
 	DateOfBirth time.Time `json:"date_of_birth"`
-	UpdateDate time.Time `json:"update_date"`
+	UpdateDate  time.Time `json:"update_date"`
 	CreateDate  time.Time `json:"create_date"`
 	DeleteDate  time.Time `json:"delete_date"`
 }
 
-func NewUser(name, fn,ln, email, pass string,dateofBirth time.Time)*User{
+func NewUser(name, fn, ln, email, pass string, dateofBirth time.Time) *User {
 	return &User{
-		UserName    :name,
-		FirstName   :fn,
-		LastName    :ln,
-		Email       :email,
-		Password    :pass,
+		UserName:    name,
+		FirstName:   fn,
+		LastName:    ln,
+		Email:       email,
+		Password:    pass,
 		DateOfBirth: dateofBirth,
-		CreateDate: time.Now(),
+		CreateDate:  time.Now(),
 	}
 }
 
@@ -53,4 +53,33 @@ func (u User) MarshalJSON() ([]byte, error) {
 	a.DeleteDate = u.DeleteDate
 
 	return json.Marshal(a)
+}
+
+func (u *User) UnmarshalJSON(data []byte) error {
+	type aux struct {
+		UserName    string    `json:"user_name"`
+		Email       string    `json:"email"`
+		FirstName   string    `json:"fn"`
+		LastName    string    `json:"ln"`
+		Password    string    `json:"pass"`
+		DateOfBirth time.Time `json:"date_of_birth"`
+		CreateDate  time.Time `json:"create_date"`
+		DeleteDate  time.Time `json:"delete_date"`
+	}
+
+	var a aux
+	if err := json.Unmarshal(data, &a); err != nil {
+		return err
+	}
+
+	u.UserName = a.UserName
+	u.Email = a.Email
+	u.FirstName = a.FirstName
+	u.LastName = a.LastName
+	u.Password = a.Password
+	u.DateOfBirth = a.DateOfBirth
+	u.CreateDate = a.CreateDate
+	u.DeleteDate = a.DeleteDate
+
+	return nil
 }
