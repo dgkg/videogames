@@ -2,6 +2,7 @@ package mock
 
 import (
 	"errors"
+	"time"
 
 	"github.com/google/uuid"
 
@@ -30,6 +31,7 @@ func MockVideoGame(db *DB, title,
 
 func (m DB) AddVideoGame(u *models.VideoGame) error {
 	u.ID = uuid.New().String()
+	u.CreateDate = time.Now()
 	m.VideoGames[u.ID] = u
 
 	return nil

@@ -46,9 +46,21 @@ func (m DB) UpdateUser(uuid string, update map[string]interface{}) (*models.User
 		return nil, errors.New("db mock: user not found")
 	}
 
-	u2.FirstName = update["FirstName"].(string)
-	u2.LastName = update["LastName"].(string)
-	u2.Email = update["Email"].(string)
+	if update == nil {
+		return nil, errors.New("db mock: the given interface is nil")
+	}
+
+	if v, ok := update["fn"]; ok {
+		u2.FirstName = v.(string)
+	}
+
+	if v, ok := update["ln"]; ok {
+		u2.LastName = v.(string)
+	}
+
+	if v, ok := update["email"]; ok {
+		u2.Email = v.(string)
+	}
 	u2.UpdateDate = time.Now()
 	m.Users[uuid] = u2
 
