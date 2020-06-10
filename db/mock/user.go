@@ -21,6 +21,7 @@ func MockUser(db *DB, fn, ln, email, pass string) {
 
 func (m DB) AddUser(u *models.User) error {
 	u.ID = uuid.New().String()
+	u.CreateDate = time.Now()
 	m.Users[u.ID] = u
 
 	return nil

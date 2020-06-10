@@ -7,14 +7,14 @@ import (
 	"github.com/google/uuid"
 )
 
-func (serivce *Service) AddVideoGame(v *models.VideoGame) error {
+func (service *Service) AddVideoGame(v *models.VideoGame) error {
 	v.ID = uuid.New().String()
 	v.CreateDate = time.Now()
 	return service.db.Create(&v).Error
 }
 
-func (serivce *Service) GetVideoGames() (map[string]*models.VideoGame, error) {
-	vgs := make([]models.VideoGame)
+func (service *Service) GetVideoGames() (map[string]*models.VideoGame, error) {
+	var vgs []models.VideoGame
 	service.db.Find(&vgs)
 	res := make(map[string]*models.VideoGame)
 	for i := 0; i < len(vgs); i++ {
@@ -23,19 +23,19 @@ func (serivce *Service) GetVideoGames() (map[string]*models.VideoGame, error) {
 	return res, nil
 }
 
-func (serivce *Service) GetVideoGame(uuid string) (*models.VideoGame, error) {
+func (service *Service) GetVideoGame(uuid string) (*models.VideoGame, error) {
 	var vg models.VideoGame
-	return vg, service.db.Where("id = ?", uuid).First(&vg).Error
+	return &vg, service.db.Where("id = ?", uuid).First(&vg).Error
 }
 
-func (serivce *Service) UpdateVideoGame(uuid string, update *models.VideoGame) (*models.VideoGame, error) {
-	service.db.Model(&models.User).Where("id = ?", uuid).Updates(update)
+func (service *Service) UpdateVideoGame(uuid string, update map[string]interface{}) (*models.VideoGame, error) {
+	service.db.Model(&models.User{}).Where("id = ?", uuid).Updates(update)
 	return nil, nil
 }
 
-func (serivce *Service) DeleteVideoGame(uuid string) error {
+func (service *Service) DeleteVideoGame(uuid string) error {
 	vg := models.VideoGame{
 		ID: uuid,
 	}
-	return service.db.Delete(&vg)
+	return service.db.Delete(&vg).Error
 }

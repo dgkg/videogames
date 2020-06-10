@@ -14,10 +14,10 @@ func (service *Service) AddUser(u *models.User) error {
 }
 
 func (service *Service) GetUsers() (map[string]*models.User, error) {
-	us := make([]models.User)
+	var us []models.User
 	service.db.Find(&us)
 	res := make(map[string]*models.User)
-	for i := 0; i < len(vgs); i++ {
+	for i := 0; i < len(us); i++ {
 		res[us[i].ID] = &us[i]
 	}
 	return res, nil
@@ -25,11 +25,11 @@ func (service *Service) GetUsers() (map[string]*models.User, error) {
 
 func (service *Service) GetUser(uuid string) (*models.User, error) {
 	var u models.User
-	return vg, service.db.Where("id = ?", uuid).First(&u).Error
+	return &u, service.db.Where("id = ?", uuid).First(&u).Error
 }
 
 func (service *Service) UpdateUser(uuid string, update map[string]interface{}) (*models.User, error) {
-	service.db.Model(&models.User).Where("id = ?", uuid).Updates(update)
+	service.db.Model(&models.User{}).Where("id = ?", uuid).Updates(update)
 	return nil, nil
 }
 

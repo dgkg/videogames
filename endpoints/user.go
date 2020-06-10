@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/dgkg/videogames/db"
+	"github.com/dgkg/videogames/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,6 +20,7 @@ func initEndpointUser(db db.Store, r *gin.Engine) {
 	r.GET("/users/:uuid", us.Get)
 	r.GET("/users", us.GetAll)
 	r.DELETE("/users/:uuid", us.Delete)
+	r.POST("/users", us.Create)
 }
 
 func (su *serviceUser) Get(ctx *gin.Context) {
@@ -49,4 +51,19 @@ func (su *serviceUser) Delete(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(200, nil)
+}
+
+func (su *serviceUser) Create(ctx *gin.Context) {
+	var u models.User
+	if err := ctx.BindJSON(&u); err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	if err := su.db.AddUser(&u); err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusInternalServerError, nil)
+		return
+	}
+	ctx.JSON(200, u)
 }
