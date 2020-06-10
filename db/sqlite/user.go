@@ -30,7 +30,7 @@ func (service *Service) GetUser(uuid string) (*models.User, error) {
 
 func (service *Service) UpdateUser(uuid string, update map[string]interface{}) (*models.User, error) {
 	service.db.Model(&models.User{}).Where("id = ?", uuid).Updates(update)
-	return nil, nil
+	return service.GetUser(uuid)
 }
 
 func (service *Service) DeleteUser(uuid string) error {

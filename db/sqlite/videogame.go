@@ -30,7 +30,7 @@ func (service *Service) GetVideoGame(uuid string) (*models.VideoGame, error) {
 
 func (service *Service) UpdateVideoGame(uuid string, update map[string]interface{}) (*models.VideoGame, error) {
 	service.db.Model(&models.User{}).Where("id = ?", uuid).Updates(update)
-	return nil, nil
+	return service.GetVideoGame(uuid)
 }
 
 func (service *Service) DeleteVideoGame(uuid string) error {

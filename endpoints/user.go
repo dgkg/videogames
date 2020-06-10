@@ -74,26 +74,21 @@ func (su *serviceUser) Create(ctx *gin.Context) {
 }
 
 func (su *serviceUser) UpdateUser(ctx *gin.Context) {
-	update := make(map[string]interface{})
 
+	update := make(map[string]interface{})
 	if err := ctx.BindJSON(&update); err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	if _, err := su.db.UpdateUser(ctx.Param("uuid"), update); err != nil {
-		log.Println(err)
-		ctx.JSON(http.StatusInternalServerError, nil)
-		return
-	}
-
-	u, err := su.db.GetUser(ctx.Param("uuid"))
+	u, err := su.db.UpdateUser(ctx.Param("uuid"), update)
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusInternalServerError, nil)
 		return
 	}
+
 	ctx.JSON(200, u)
 }
 
