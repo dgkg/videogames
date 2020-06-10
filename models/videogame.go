@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-const(
+const (
 	CatAventure = iota
 	CatFPS
 	CatStrategy
@@ -12,16 +12,14 @@ const(
 )
 
 type VideoGame struct {
-	ID          string   `json:"uuid"`
-	IDUser     string   `json:"user_name"`
-	Title       string   `json:"email"`
-	Description string   `json:"pass"`
-	Images      []string `json:"fn"`
-	Status      int      `json:"ln"`
-	Category    int	`json:"category"`
+	ID          string    `json:"uuid"`
+	IDUser      string    `json:"user_id"`
+	Title       string    `json:"email"`
+	Description string    `json:"desc"`
+	Images      []string  `json:"imgs"`
+	Status      int       `json:"status"`
+	Category    int       `json:"category"`
 	CreateDate  time.Time `json:"create_date"`
-	UpdateDate time.Time `json:"update_date"`
+	UpdateDate  time.Time `json:"update_date"`
 	DeleteDate  time.Time `json:"delete_date"`
 }
-
-
