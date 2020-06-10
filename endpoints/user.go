@@ -1,10 +1,13 @@
 package endpoints
 
 import (
+	"crypto/sha256"
+	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/dgkg/videogames/db"
+	"github.com/dgkg/videogames/middleware"
 	"github.com/dgkg/videogames/models"
 	"github.com/gin-gonic/gin"
 )
@@ -17,6 +20,7 @@ func initEndpointUser(db db.Store, r *gin.Engine) {
 	us := &serviceUser{
 		db: db,
 	}
+	r.POST("/users/login", us.Login)
 	r.GET("/users/:uuid", us.Get)
 	r.GET("/users", us.GetAll)
 	r.DELETE("/users/:uuid", us.Delete)
@@ -91,4 +95,37 @@ func (su *serviceUser) UpdateUser(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(200, u)
+}
+
+func (su *serviceUser) Login(ctx *gin.Context) {
+	type aux struct {
+		Email    string `json:"email"`
+		Password string `json:"pass"`
+	}
+
+	var a aux
+	if err := ctx.BindJSON(&a); err != nil {
+		log.Println((err))
+		ctx.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	u, err := su.db.GetUserByEmail(a.Email)
+
+	fmt.Println("u")
+	fmt.Println(u)
+	if err != nil {
+		log.Println((err))
+	}
+
+	auxSum := sha256.Sum256([]byte(a.Password))
+	if string(auxSum[:]) != u.Password {
+		ctx.JSON(http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	token, err := middleware.Create([]byte("secret"), u.ID)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, err.Error())
+	}
+	ctx.JSON(200, token)
 }

@@ -36,6 +36,16 @@ func (m DB) GetUser(uuid string) (*models.User, error) {
 	return m.Users[uuid], nil
 }
 
+func (m DB) GetUserByEmail(email string) (*models.User, error) {
+	for _, u := range m.Users {
+		if u.Email == email {
+			return u, nil
+		}
+	}
+
+	return nil, errors.New("db mock: user not found")
+}
+
 func (m DB) GetUsers() (map[string]*models.User, error) {
 	return m.Users, nil
 }

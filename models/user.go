@@ -1,6 +1,7 @@
 package models
 
 import (
+	"crypto/sha256"
 	"encoding/json"
 	"time"
 )
@@ -72,11 +73,13 @@ func (u *User) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
+	sum := sha256.Sum256([]byte(a.Password))
+
 	u.UserName = a.UserName
 	u.Email = a.Email
 	u.FirstName = a.FirstName
 	u.LastName = a.LastName
-	u.Password = a.Password
+	u.Password = string(sum[:])
 	u.DateOfBirth = a.DateOfBirth
 	u.CreateDate = a.CreateDate
 	u.DeleteDate = a.DeleteDate

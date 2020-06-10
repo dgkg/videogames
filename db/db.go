@@ -13,6 +13,7 @@ type StoreUser interface {
 	AddUser(u *models.User) error
 	GetUsers() (map[string]*models.User, error)
 	GetUser(uuid string) (*models.User, error)
+	GetUserByEmail(email string) (*models.User, error)
 	UpdateUser(uuid string, update map[string]interface{}) (*models.User, error)
 	DeleteUser(uuid string) error
 }

@@ -39,3 +39,8 @@ func (service *Service) DeleteUser(uuid string) error {
 	}
 	return service.db.Delete(&u).Error
 }
+
+func (service *Service) GetUserByEmail(email string) (*models.User, error) {
+	var u models.User
+	return &u, service.db.Where("email = ?", email).First(&u).Error
+}
