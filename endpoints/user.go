@@ -20,12 +20,15 @@ func initEndpointUser(db db.Store, r *gin.Engine) {
 	us := &serviceUser{
 		db: db,
 	}
-	r.POST("/users/login", us.Login)
-	r.GET("/users/:uuid", us.Get)
-	r.GET("/users", us.GetAll)
-	r.DELETE("/users/:uuid", us.Delete)
-	r.POST("/users", us.Create)
-	r.PATCH("/users/:uuid", us.UpdateUser)
+	r.POST("/login", us.Login)
+	users := r.Group("users")
+
+	users.Use(middleware.NewJWT([]byte("secret")))
+	users.GET("/:uuid", us.Get)
+	users.GET("/", us.GetAll)
+	users.DELETE("/:uuid", us.Delete)
+	users.POST("/", us.Create)
+	users.PATCH("/:uuid", us.UpdateUser)
 }
 
 func (su *serviceUser) Get(ctx *gin.Context) {
@@ -113,7 +116,7 @@ func (su *serviceUser) Login(ctx *gin.Context) {
 	}
 
 	auxSum := sha256.Sum256([]byte(a.Password))
-	if string(auxSum[:]) != u.Password {
+	if fmt.Sprintf("%x", auxSum) != u.Password {
 		ctx.JSON(http.StatusUnauthorized, err.Error())
 		return
 	}

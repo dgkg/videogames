@@ -3,6 +3,7 @@ package models
 import (
 	"crypto/sha256"
 	"encoding/json"
+	"fmt"
 	"time"
 )
 
@@ -79,7 +80,7 @@ func (u *User) UnmarshalJSON(data []byte) error {
 	u.Email = a.Email
 	u.FirstName = a.FirstName
 	u.LastName = a.LastName
-	u.Password = string(sum[:])
+	u.Password = fmt.Sprintf("%x", sum)
 	u.DateOfBirth = a.DateOfBirth
 	u.CreateDate = a.CreateDate
 	u.DeleteDate = a.DeleteDate

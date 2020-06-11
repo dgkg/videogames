@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/dgkg/videogames/db"
+	"github.com/dgkg/videogames/middleware"
 	"github.com/dgkg/videogames/models"
 	"github.com/gin-gonic/gin"
 )
@@ -17,11 +18,15 @@ func initEndpointVideoGame(db db.Store, r *gin.Engine) {
 	us := &serviceVideoGame{
 		db: db,
 	}
-	r.GET("/videogames/:uuid", us.Get)
-	r.GET("/videogames", us.GetAll)
-	r.DELETE("/videogames/:uuid", us.Delete)
-	r.POST("/videogames", us.Create)
-	r.PATCH("/videogames/:uuid", us.Update)
+
+	videogames := r.Group("videogames")
+	videogames.Use((middleware.NewJWT([]byte("secret"))))
+
+	videogames.GET("/videogames/:uuid", us.Get)
+	videogames.GET("/videogames", us.GetAll)
+	videogames.DELETE("/videogames/:uuid", us.Delete)
+	videogames.POST("/videogames", us.Create)
+	videogames.PATCH("/videogames/:uuid", us.Update)
 }
 
 func (su *serviceVideoGame) Get(ctx *gin.Context) {
