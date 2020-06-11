@@ -10,12 +10,12 @@ import (
 func (service *Service) AddUser(u *models.User) error {
 	u.ID = uuid.New().String()
 	u.CreateDate = time.Now()
-	return service.db.Create(&u).Error
+	return service.DB.Create(&u).Error
 }
 
 func (service *Service) GetUsers() (map[string]*models.User, error) {
 	var us []models.User
-	service.db.Find(&us)
+	service.DB.Find(&us)
 	res := make(map[string]*models.User)
 	for i := 0; i < len(us); i++ {
 		res[us[i].ID] = &us[i]
@@ -25,11 +25,11 @@ func (service *Service) GetUsers() (map[string]*models.User, error) {
 
 func (service *Service) GetUser(uuid string) (*models.User, error) {
 	var u models.User
-	return &u, service.db.Where("id = ?", uuid).First(&u).Error
+	return &u, service.DB.Where("id = ?", uuid).First(&u).Error
 }
 
 func (service *Service) UpdateUser(uuid string, update map[string]interface{}) (*models.User, error) {
-	service.db.Model(&models.User{}).Where("id = ?", uuid).Updates(update)
+	service.DB.Model(&models.User{}).Where("id = ?", uuid).Updates(update)
 	return service.GetUser(uuid)
 }
 
@@ -37,10 +37,10 @@ func (service *Service) DeleteUser(uuid string) error {
 	u := models.User{
 		ID: uuid,
 	}
-	return service.db.Delete(&u).Error
+	return service.DB.Delete(&u).Error
 }
 
 func (service *Service) GetUserByEmail(email string) (*models.User, error) {
 	var u models.User
-	return &u, service.db.Where("email = ?", email).First(&u).Error
+	return &u, service.DB.Where("email = ?", email).First(&u).Error
 }

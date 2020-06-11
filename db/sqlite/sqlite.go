@@ -10,7 +10,7 @@ import (
 
 // Service is the SQLite connextion for the persistency.
 type Service struct {
-	db *gorm.DB
+	DB *gorm.DB
 }
 
 // New is creating a new SQLite connection.
@@ -23,6 +23,6 @@ func New(fileName string) db.Store {
 	db.AutoMigrate(&models.User{}, &models.VideoGame{})
 
 	return &Service{
-		db: db,
+		DB: db,
 	}
 }
